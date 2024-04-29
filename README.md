@@ -1,1 +1,1 @@
-"# arduino-i2c-multiplexer-usage" 
+# i2c-multiplexer usage
