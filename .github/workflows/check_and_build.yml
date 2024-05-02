@@ -1,0 +1,34 @@
+name: Quality check
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+jobs:
+  clang_format_check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: RafikFarhad/clang-format-github-action@v4
+        with:
+          sources: "multiplexerUsage/*.ino"
+          style: file
+
+  build_sketch:
+    runs-on: ubuntu-latest
+    env:
+      CLI_PATH: ./cli
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: install arduino-cli
+        run: |
+          mkdir -p $CLI_PATH
+          export PATH=$PATH:$CLI_PATH
+          curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | BINDIR=$CLI_PATH sh
+
+      - name: build sketch
+        run: |
+          ${CLI_PATH}/arduino-cli compile --profile arduino-uno ./multiplexerUsage
